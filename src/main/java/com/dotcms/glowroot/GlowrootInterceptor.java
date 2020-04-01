@@ -21,6 +21,7 @@ import io.vavr.control.Try;
 public class GlowrootInterceptor implements WebInterceptor {
 
 
+    private static final long serialVersionUID = 1L;
     private static final String GLOWROOT_URI = "/glowroot";
     private static final ProxyTool proxy = new ProxyTool();
 
