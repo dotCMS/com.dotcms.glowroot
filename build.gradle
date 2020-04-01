@@ -3,16 +3,18 @@ plugins {
 }
 
 sourceCompatibility = '1.8'
-version = '0.2'
+version = '0.3'
 
 repositories {
     maven { url "http://repo.dotcms.com/artifactory/libs-release" }
 }
-
+configurations {
+    pluginLibs
+}
 dependencies {
-    compile('com.dotcms:dotcms:5.2.0')
-
-    compile 'org.apache.tomcat:tomcat-catalina:8.5.24'
+    compile('com.dotcms:dotcms:5.1.6')
+    compile group: 'org.glowroot', name: 'glowroot-agent', version: '0.13.6'
+    pluginLibs group: 'org.glowroot', name: 'glowroot-agent', version: '0.13.6'
 
 }
 
@@ -28,19 +30,45 @@ jar {
                 'Bundle-Description': 'dotCMS - Glowroot Enabler',
                 'Bundle-DocURL': 'https://dotcms.com/',
                 'Bundle-Activator': 'com.dotcms.glowroot.Activator',
-                'Import-Package': '*;version=0'
+                'Bundle-ClassPath' : "${classPathLibraries()}",
+                'Import-Package': 'com.sun.tools.attach.*,*;version=0'
         )
     }
 }
+task copyToLib(type: Copy) {
+    into "src/main/resources/libs"
+    from configurations.pluginLibs
+}
+
+jar.dependsOn copyToLib
 jar.finalizedBy 'fragmentJar'
+
+/**
+ * Searches for jars inside the src/main/resources/libs folder, the returned list is used for the
+ * Bundle-ClassPath attribute.
+ * @return String with the list of jars inside the src/main/resources/libs folder or empty if the
+ * folder does not exist or it is empty.
+ */
+def classPathLibraries() {
+
+    def bundleClassPath = "";
+    fileTree("src/main/resources/libs").filter { it.isFile() }.each { bundleClassPath += "libs/" + it.name + "," }
+
+    if (bundleClassPath != "") {
+        bundleClassPath = '.,' + bundleClassPath
+    }
+
+    return bundleClassPath
+}
+
 
 /////////////////////////
 //Fragment jar
 /////////////////////////
 
 ext {
-    bundleName = "Glowroot Enabler fragment"
-    bundleDescription = "dotCMS - Glowroot Enabler fragment"
+    bundleName = "OSGI 3rd Party library fragment"
+    bundleDescription = "dotCMS - OSGI 3rd Party library fragment"
     fragmentHost = "system.bundle; extension:=framework"
     bundleSymbolicName = "" //Auto generated based on the plugin jar
     bundleVersion = "" //Auto generated based on the plugin jar

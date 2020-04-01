@@ -35,6 +35,10 @@ public class Activator extends GenericBundleActivator {
 
         System.out.println("Installing the GlowrootInterceptor");
         
+        
+        GlowrootUtil utils = new GlowrootUtil();
+        utils.moveJarToFS();
+
 
     }
 

@@ -243,7 +243,7 @@ public class ProxyTool {
             } 
         
             
-            Logger.info(this, method  + " " + url);
+            Logger.debug(this, method  + " " + url);
             
             if (method.equalsIgnoreCase(METHOD_POST)) {
                 HttpPost m = new HttpPost(url);

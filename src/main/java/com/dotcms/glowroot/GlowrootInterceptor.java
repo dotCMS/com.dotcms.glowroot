@@ -67,7 +67,7 @@ public class GlowrootInterceptor implements WebInterceptor {
         }
 
 
-        Logger.info(this.getClass(), "GOT AN Glowroot Call -->" + request.getRequestURI() + " --> " + proxyUrl.get());
+        Logger.debug(this.getClass(), "GOT AN Glowroot Call -->" + request.getRequestURI() + " --> " + proxyUrl.get());
 
 
 
